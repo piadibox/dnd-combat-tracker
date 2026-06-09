@@ -1,4 +1,5 @@
 # Tracker per Combattimenti in D&D 5e
+import json
 
 # Ogni combattente ha: nome, classe armatura (CA), HP attuali, HP massimi,
 # HP temporanei (scudo extra che si consuma prima degli HP veri), iniziativa
@@ -112,3 +113,23 @@ class Combattimento:
             self.round_attuale += 1
 
         return combattente_corrente
+
+
+def salva_combattimento(combattimento, percorso):
+    dati = {
+        'turno_attuale': combattimento.turno_attuale,
+        'round_attuale': combattimento.round_attuale,
+        'combattenti': [c.to_dict() for c in combattimento.combattenti],
+    }
+    with open(percorso, 'w', encoding='utf-8') as f:
+        json.dump(dati, f, ensure_ascii=False, indent=2)
+
+
+def carica_combattimento(percorso):
+    with open(percorso, 'r', encoding='utf-8') as f:
+        dati = json.load(f)
+    combattimento = Combattimento()
+    combattimento.combattenti = [Combattente.from_dict(c) for c in dati['combattenti']]
+    combattimento.turno_attuale = dati['turno_attuale']
+    combattimento.round_attuale = dati['round_attuale']
+    return combattimento
