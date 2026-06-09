@@ -22,12 +22,14 @@ class Combattente:
     def curare(self, cura):
         self.hpAttuali = min(self.hpMassimi, self.hpAttuali + cura)
 
-    def aggiungere_condizione(self, condizione):
-        self.condizioni.append(condizione)
+    def aggiungere_condizione(self, condizione, durata):
+        self.condizioni.append({'Condizione': condizione, 'Durata': durata})
+    
+    
 
     def rimuovere_condizione(self, condizione):
-        if condizione in self.condizioni:
-            self.condizioni.remove(condizione)
-        
+        self.condizioni = [c for c in self.condizioni if c['Condizione'] != condizione]
+
     def aggiungere_hp_temporanei(self, hp):
-        self.hpTemporanei += hp
+        if hp > self.hpTemporanei:
+            self.hpTemporanei = hp
